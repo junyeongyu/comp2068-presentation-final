@@ -14,6 +14,14 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* GET Presentation. */
+router.get('/presentation', function(req, res, next) {
+  res.render('presentation', {
+    title: 'COMP2068 - Book Store',
+      user: req.user
+  });
+});
+
 /* GET register */
 router.get('/register', function(req, res, next) {
   // load the register.ejs view
