@@ -6,6 +6,31 @@ let router = express.Router();
 // link to the book model for CRUD operations
 let Book = require('../models/book');
 
+//setting imageuploader multer module
+let multer  = require('multer');
+let util = require('util');
+//setting random filename maker to avoid duplicate file name
+let crypto = require('crypto');
+let path = require('path');
+//setting fs to read file path - to show on portfolio page
+let fs = require('fs');
+//setting the directory to read
+let testUpload = 'public/images/uploads/';
+//setting the directory to upload
+let storage = multer.diskStorage({
+  destination: 'public/images/uploads/',
+  filename: function (req, file, cb) {
+     crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return cb(err);
+      cb(null, raw.toString('hex') + path.extname(file.originalname));
+    });
+  }
+});
+//setting the multer
+let upload = multer({ storage: storage });
+//setting the type to use multer for specific file
+let type = upload.single('file');
+
 // auth check
 function isLoggedIn(req, res, next) {
    if (req.isAuthenticated()) {
@@ -36,7 +61,7 @@ router.get('/', function(req, res, next) {
 });
 
 // GET /books/add - show blank add form
-router.get('/add', isLoggedIn,  function(req, res, next) {
+router.get('/add',isLoggedIn,  function(req, res, next) {
    // show the add form
    res.render('books/add', {
       title: 'Book Details',
@@ -45,7 +70,9 @@ router.get('/add', isLoggedIn,  function(req, res, next) {
 });
 
 // POST /books/add - save the new book
-router.post('/add', isLoggedIn, function(req, res, next) {
+router.post('/add',isLoggedIn, type, function(req, res, next) {
+   var pathArray = req.file.path.split( '/' );
+   console.log(pathArray);
    // use Mongoose to populate a new Book
    Book.create({
       title: req.body.title,

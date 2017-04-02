@@ -27,7 +27,6 @@ var conn = mongoose.connection;
 
 // link to config file
 var globals = require('./config/globals');
-
 conn.open(globals.db);
 
 // view engine setup
