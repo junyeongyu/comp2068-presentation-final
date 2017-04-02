@@ -19,6 +19,9 @@ var bookSchema = new mongoose.Schema({
     year: {
         type: Number,
         min: 0
+    },
+    file: {
+        type: String
     }
 });
 

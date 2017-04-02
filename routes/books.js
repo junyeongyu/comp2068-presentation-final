@@ -8,17 +8,16 @@ let Book = require('../models/book');
 
 //setting imageuploader multer module
 let multer  = require('multer');
-let util = require('util');
 //setting random filename maker to avoid duplicate file name
 let crypto = require('crypto');
 let path = require('path');
 //setting fs to read file path - to show on portfolio page
-let fs = require('fs');
+
 //setting the directory to read
-let testUpload = 'public/images/uploads/';
+let IMAGE_UPLOAD_PATH = '/images/uploads/';
 //setting the directory to upload
 let storage = multer.diskStorage({
-  destination: 'public/images/uploads/',
+  destination: 'public' + IMAGE_UPLOAD_PATH,
   filename: function (req, file, cb) {
      crypto.pseudoRandomBytes(16, function (err, raw) {
       if (err) return cb(err);
@@ -44,7 +43,7 @@ function isLoggedIn(req, res, next) {
 router.get('/', function(req, res, next) {
 
    // use mongoose model to query mongodb for all books
-   Book.find(function(err, books) {
+   Book.find().sort({'_id': 'desc'}).exec(function(err, books) {
       if (err) {
          console.log(err);
          res.end(err);
@@ -55,7 +54,7 @@ router.get('/', function(req, res, next) {
       res.render('books/index', {
          books: books,
          title: 'Book List',
-          user: req.user
+         user: req.user
       });
    });
 });
@@ -71,14 +70,16 @@ router.get('/add',isLoggedIn,  function(req, res, next) {
 
 // POST /books/add - save the new book
 router.post('/add',isLoggedIn, type, function(req, res, next) {
-   var pathArray = req.file.path.split( '/' );
-   console.log(pathArray);
+   var pathArray = req.file ? req.file.path.split( '/' ) : [];
+   var file = req.file ? pathArray[pathArray.length - 1]: null;
+   
    // use Mongoose to populate a new Book
    Book.create({
       title: req.body.title,
       author: req.body.author,
       price: req.body.price,
-      year: req.body.year
+      year: req.body.year,
+      file: IMAGE_UPLOAD_PATH + file
    }, function(err, book) {
           if (err) {
              console.log(err);
@@ -109,7 +110,7 @@ router.get('/delete/:_id', isLoggedIn, function(req, res, next) {
 router.get('/:_id', isLoggedIn, function(req, res, next) {
    // grab id from the url
    let _id = req.params._id;
-
+   
    // use mongoose to find the selected book
    Book.findById(_id, function(err, book) {
       if (err) {
@@ -120,25 +121,33 @@ router.get('/:_id', isLoggedIn, function(req, res, next) {
       res.render('books/edit', {
          book: book,
          title: 'Book Details',
-          user: req.user
+         user: req.user
       });
    });
 });
 
 // POST /books/_id - save the updated book
-router.post('/:_id', isLoggedIn, function(req, res, next) {
+router.post('/:_id', isLoggedIn, type, function(req, res, next) {
    // grab id from url
    let _id = req.params._id;
-
+   var pathArray = req.file ? req.file.path.split( '/' ) : [];
+   var file = req.file ? pathArray[pathArray.length - 1]: null;
+   
    // populate new book from the form
-   let book = new Book({
+   let options = {
       _id: _id,
       title: req.body.title,
       author: req.body.author,
       price: req.body.price,
       year: req.body.year
-   });
-
+   };
+   console.log(file);
+   if (file) {
+      options.file = IMAGE_UPLOAD_PATH + file; // need to add when update file
+   }
+   console.log(options);
+   let book = new Book(options);
+   
    Book.update({ _id: _id }, book,  function(err) {
       if (err) {
          console.log(err);
