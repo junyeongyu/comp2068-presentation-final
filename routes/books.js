@@ -11,7 +11,9 @@ let multer  = require('multer');
 //setting random filename maker to avoid duplicate file name
 let crypto = require('crypto');
 let path = require('path');
-//setting fs to read file path - to show on portfolio page
+
+// For windows, linux & mac os
+let slash = require('slash');
 
 //setting the directory to read
 let IMAGE_UPLOAD_PATH = '/images/uploads/';
@@ -130,7 +132,7 @@ router.get('/:_id', isLoggedIn, function(req, res, next) {
 router.post('/:_id', isLoggedIn, type, function(req, res, next) {
    // grab id from url
    let _id = req.params._id;
-   var pathArray = req.file ? req.file.path.split( '/' ) : [];
+   var pathArray = req.file ? slash(req.file.path).split( '/' ) : [];
    var file = req.file ? pathArray[pathArray.length - 1]: null;
    
    // populate new book from the form
