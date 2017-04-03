@@ -76,7 +76,7 @@ router.post('/add',isLoggedIn, type, function(req, res, next) {
       author: req.body.author,
       price: req.body.price,
       year: req.body.year,
-      file: IMAGE_UPLOAD_PATH + req.file.filename
+      file: req.file ? IMAGE_UPLOAD_PATH + req.file.filename : ''
    }, function(err, book) {
           if (err) {
              console.log(err);
