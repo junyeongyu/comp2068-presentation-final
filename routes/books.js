@@ -12,9 +12,6 @@ let multer  = require('multer');
 let crypto = require('crypto');
 let path = require('path');
 
-// For windows, linux & mac os
-let slash = require('slash');
-
 //setting the directory to read
 let IMAGE_UPLOAD_PATH = '/images/uploads/';
 //setting the directory to upload
@@ -72,8 +69,6 @@ router.get('/add',isLoggedIn,  function(req, res, next) {
 
 // POST /books/add - save the new book
 router.post('/add',isLoggedIn, type, function(req, res, next) {
-   var pathArray = req.file ? req.file.path.split( '/' ) : [];
-   var file = req.file ? pathArray[pathArray.length - 1]: null;
    
    // use Mongoose to populate a new Book
    Book.create({
@@ -81,7 +76,7 @@ router.post('/add',isLoggedIn, type, function(req, res, next) {
       author: req.body.author,
       price: req.body.price,
       year: req.body.year,
-      file: IMAGE_UPLOAD_PATH + file
+      file: IMAGE_UPLOAD_PATH + req.file.filename
    }, function(err, book) {
           if (err) {
              console.log(err);
@@ -132,8 +127,6 @@ router.get('/:_id', isLoggedIn, function(req, res, next) {
 router.post('/:_id', isLoggedIn, type, function(req, res, next) {
    // grab id from url
    let _id = req.params._id;
-   var pathArray = req.file ? slash(req.file.path).split( '/' ) : [];
-   var file = req.file ? pathArray[pathArray.length - 1]: null;
    
    // populate new book from the form
    let options = {
@@ -143,11 +136,9 @@ router.post('/:_id', isLoggedIn, type, function(req, res, next) {
       price: req.body.price,
       year: req.body.year
    };
-   console.log(file);
-   if (file) {
-      options.file = IMAGE_UPLOAD_PATH + file; // need to add when update file
+   if (req.file) {
+      options.file = IMAGE_UPLOAD_PATH + req.file.filename; // need to add when update file
    }
-   console.log(options);
    let book = new Book(options);
    
    Book.update({ _id: _id }, book,  function(err) {
