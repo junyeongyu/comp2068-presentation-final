@@ -4,22 +4,31 @@
 
 <main class="container">
     <section class="jumbotron">
-    <pre>
-        # comp2068-presentation-final
+    <pre class="text-center">
+      <h2 ><strong>File upload using Node.JS</strong></h2>
+      <img src="/file_upload.jpg" width="70%" />
+      <br />
+      <h3> 1. What is File Upload?</h3>
+      <img src="/upload.png" width="50%" />
+      <div>
+        <h4>- It means "File sending" a computer to another computer.<br />
+        - The server is considered as higher position, so only sending file <br />from the client to the server is called "Filed Upload". <br />
+        - To transfer data or files from a peripheral or subordinate system to a larger<br />  or more central one,especially from a personal computer to an Internet server.<br />
+        - Many protocols like FTP, HTTP, HTTPS, SMTP and etc protocols, but for file upload,<br /> HTTP and FTP are common.<br />
+        - In http protocol, we need to use multipart uploading, we will use "multer" npm module.</h4>
+      </div>
+      <h3> 2. How to upload file</h3>
+      <img src="/file_upload2.png" width="50%" />    
+      <h4>
+          - Save binary file into database directly.(as BSON-mongoDB) <br />
+          - Save binary file into commercial other server site and save the link in database.<br />
+          <strong>- Save file into server computer and save the path in database</strong>
+          </h4>
+
+      <h3> 3. Demonstration (In the class)</h3>
+        <img src="/multer.png" width="60%" />
         
-        # 1. What is file upload
-          - File upload is the transmission of a file from local computer to server computer.
-          - File upload takes place using FTP, HTTP, HTTPS, SOAP, and etc protocols.
-          - In http protocol, we need to use multipart uploading, we will use "multer" npm module.
-          
-        # 2. How to upload file
-          - First, save binary file into database directly.
-          - Second, save file into server computer and save the link in database
-          - Third, save binary file into commercial other server site and save the link in database.
-          
-          - We will use second way to upload file.
-        
-        # 3. Demonstration (In the class)
+        <img src="/stat_multer.png" width="50%" />
     </pre>
     </section>
 </main>
