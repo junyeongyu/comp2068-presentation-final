@@ -17,10 +17,10 @@ let IMAGE_UPLOAD_PATH = '/images/uploads/';
 //setting the directory to upload
 let storage = multer.diskStorage({
   destination: 'public' + IMAGE_UPLOAD_PATH,
-  filename: function (req, file, cb) {
+  filename: function (req, file, callback) {
      crypto.pseudoRandomBytes(16, function (err, raw) {
       if (err) return cb(err);
-      cb(null, raw.toString('hex') + path.extname(file.originalname));
+      callback(null, raw.toString('hex') + path.extname(file.originalname));
     });
   }
 });
@@ -69,7 +69,7 @@ router.get('/add',isLoggedIn,  function(req, res, next) {
 
 // POST /books/add - save the new book
 router.post('/add',isLoggedIn, type, function(req, res, next) {
-   
+   console.log(req.file.filename);
    // use Mongoose to populate a new Book
    Book.create({
       title: req.body.title,
